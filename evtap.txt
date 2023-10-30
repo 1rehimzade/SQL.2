@@ -1,0 +1,60 @@
+                  task 1 
+
+CREATE TABLE Users (
+    UserID INT PRIMARY KEY,
+    Username VARCHAR(25) NOT NULL,
+    Password VARCHAR(25) NOT NULL
+);
+
+
+CREATE TABLE Roles (
+    RoleID INT PRIMARY KEY,
+    Name VARCHAR(25) NOT NULL
+);
+
+
+CREATE TABLE UserRoles (
+    UserID INT,
+    RoleID INT,
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (RoleID) REFERENCES Roles(RoleID),
+    PRIMARY KEY (UserID, RoleID)
+);
+SELECT Users.Username, Roles.Name AS Role
+FROM Users
+JOIN Roles ON Users.RoleID = Roles.RoleID;
+
+                    task 2
+
+CREATE TABLE Categories (
+    CategoryID INT PRIMARY KEY,
+    CategoryName VARCHAR(255) NOT NULL
+);
+CREATE TABLE Colors (
+    ColorID INT PRIMARY KEY,
+    ColorName VARCHAR(255) NOT NULL
+);
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(255) NOT NULL,
+    CategoryID INT,
+    FOREIGN KEY (CategoryID) REFERENCES Categories(CategoryID)
+);
+
+CREATE TABLE ProductColor (
+    ProductID INT,
+    ColorID INT,
+    PRIMARY KEY (ProductID, ColorID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID),
+    FOREIGN KEY (ColorID) REFERENCES Colors(ColorID)
+);
+SELECT
+    P.ProductName,
+    C.CategoryName,
+    GROUP_CONCAT(Co.ColorName SEPARATOR ', ') AS ColorNames
+FROM Products P
+JOIN Categories C ON P.CategoryID = C.CategoryID
+LEFT JOIN ProductColor PC ON P.ProductID = PC.ProductID
+LEFT JOIN Colors Co ON PC.ColorID = Co.ColorID
+GROUP BY P.ProductName, C.CategoryName;
+                             t
